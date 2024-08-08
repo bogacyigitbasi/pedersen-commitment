@@ -1,3 +1,5 @@
+use rand::Rng;
+
 /// we will pick two generators g and h
 /// ideally from a curve but its okay to pick some random numbers
 /// to achieve same goal
@@ -53,4 +55,28 @@ impl PedersenCommitment {
     }
 }
 //lets pick the modulus, secret, g, h and run the protocol
-fn main() {}
+fn main() {
+    // random number generator
+    let mut rng = rand::thread_rng();
+    // global param generator g (base)
+    const g: u64 = 5;
+    // global param generator h (base)
+    const h: u64 = 7;
+    // prime modular value to work in finite field
+    const p: u64 = 101;
+    // message
+    let m = 9;
+    // blinding factor
+    let r = rng.gen_range(1..1000);
+
+    let pedersen_commitment = PedersenCommitment::new(g, h, p);
+    // calculate the commitment
+    let commit = pedersen_commitment.commit(m, r);
+    println!("Pedersen commitment : r = {}", commit);
+
+    // verify the commitment after some processes
+    println!(
+        "Is commitment verified: {}",
+        pedersen_commitment.verify(commit, m, r)
+    );
+}
