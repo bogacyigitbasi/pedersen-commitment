@@ -6,22 +6,22 @@ use rand::Rng;
 /// then we will need another random number as blinding factor
 /// and calculate g^m.h^r where m is our message to hide
 ///
-///
-
 // calculates g^x mod p
 fn modular_exp(g: &u64, x: &u64, p: &u64) -> u64 {
     let mut result = 1;
     let mut g = g % p;
     let mut x = *x;
-
+    // we can use log n (x) multiplications to compute g^x
+    // by applying exponentiation square x^n = x^((n/2)^2 => x^n = x^2^(n-1)
     while x > 0 {
         // if x is odd, multiply result
         if x % 2 == 1 {
+            //eventually x becomes 1
             result = result * g;
         }
         // x = x/2
-        x = x >> 1;
-        // g to g^2
+        x = x >> 1; // divide the number by 2^n
+                    // g to g^2
         g = g * g % p;
     }
     result % p
